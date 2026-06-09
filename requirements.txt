@@ -1,0 +1,9 @@
+pandas
+scikit-learn
+joblib
+numpy
+fastapi
+uvicorn
+python-multipart
+python-dotenv
+sqlalchemy

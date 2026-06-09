@@ -1,0 +1,24 @@
+{
+    "accuracy": 99.9,
+    "precision": 99.9,
+    "recall": 99.9,
+    "f1_weighted": 99.9,
+    "cv_f1_mean": 99.86,
+    "cv_f1_std": 0.07,
+    "feature_importances": {
+        "rainfall": 0.5564292713685752,
+        "river_level": 0.2154341724250602,
+        "soil_moisture": 0.12038864041982925,
+        "drainage_cap": 0.0751794383954024,
+        "humidity": 0.02771074359773181,
+        "temp": 0.0048577337934010804
+    },
+    "feature_names": [
+        "river_level",
+        "rainfall",
+        "humidity",
+        "soil_moisture",
+        "drainage_cap",
+        "temp"
+    ]
+}

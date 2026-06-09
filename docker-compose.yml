@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: guwahati-flood-api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount the database as a volume to prevent SQLite data loss if the container stops
+      - ./backend/flood_data.db:/app/backend/flood_data.db
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: guwahati-flood-web
+    ports:
+      # Expose Nginx port 80 to the Vite dev port 5173 for simple access
+      - "5173:80"
+    depends_on:
+      - api
+    restart: unless-stopped

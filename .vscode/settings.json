@@ -1,0 +1,11 @@
+{
+  "python.defaultInterpreterPath": "/Users/pranabkeleng/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14",
+  "python.analysis.extraPaths": [
+    "/Users/pranabkeleng/Documents/Guwahati flood prediction /.venv/lib/python3.14/site-packages",
+    "/Users/pranabkeleng/Documents/Guwahati flood prediction /backend",
+    "/Users/pranabkeleng/Documents/Guwahati flood prediction /model"
+  ],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticSeverityOverrides": {
+  }
+}
