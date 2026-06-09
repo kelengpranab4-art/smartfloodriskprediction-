@@ -14,8 +14,6 @@ services:
     dockerContext: .
     dockerfilePath: frontend/Dockerfile
     plan: free
-    buildArgs:
+    envVars:
       - key: VITE_API_URL
-        generateValue: false
-        # After first deploy, get the flood-backend URL from Render and set
-        # this env var manually: https://<flood-backend>.onrender.com
+        value: https://flood-backend.onrender.com
