@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Phone, Bell, CheckCircle, XCircle, Loader2, X } from 'lucide-react';
 
 export default function AlertSignup({ zones, onClose }) {
@@ -14,7 +14,7 @@ export default function AlertSignup({ zones, onClose }) {
     setLoading(true);
     setStatus(null);
     try {
-      const res = await axios.post('http://localhost:8000/subscribe', {
+      const res = await api.post('/subscribe', {
         phone_number: phoneNumber,
         zone_name: selectedZone
       });

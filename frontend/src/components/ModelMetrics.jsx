@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
     ResponsiveContainer, RadialBarChart, RadialBar, Cell,
@@ -62,7 +62,7 @@ export default function ModelMetrics() {
         setLoading(true);
         setError(null);
         try {
-            const res = await axios.get('http://localhost:8000/model/metrics');
+            const res = await api.get('/model/metrics');
             setMetrics(res.data);
         } catch (e) {
             setError('Could not load metrics from API.');

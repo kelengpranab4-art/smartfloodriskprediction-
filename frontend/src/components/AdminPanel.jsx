@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { apiBaseUrl } from '../api';
 import { 
   Shield, Users, MessageSquare, Radio, Activity, 
   Trash2, AlertTriangle, LogOut, Loader2, CheckCircle,
@@ -24,7 +24,7 @@ export default function AdminPanel({ onLogout }) {
   });
 
   const axiosAdmin = axios.create({
-    baseURL: 'http://localhost:8000',
+    baseURL: apiBaseUrl,
     headers: { 'X-Admin-Key': apiKey }
   });
 
@@ -83,7 +83,7 @@ export default function AdminPanel({ onLogout }) {
     if (!window.confirm(`Trigger ${alertForm.risk_level} alert for ${alertForm.zone}?`)) return;
     setLoading(true);
     try {
-      await axios.post('http://localhost:8000/trigger_alert', alertForm);
+      await api.post('/trigger_alert', alertForm);
       alert('Alert broadcasted successfully!');
       setAlertForm({ ...alertForm, message: '' });
     } catch (err) {

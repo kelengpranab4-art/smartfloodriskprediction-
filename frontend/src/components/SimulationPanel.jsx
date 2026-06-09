@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Sliders, Droplets, Waves, RefreshCw, Play, CloudRain, Mountain, Settings, ThermometerSun } from 'lucide-react';
 
 export default function SimulationPanel({ onSimulateResult }) {
@@ -14,7 +14,7 @@ export default function SimulationPanel({ onSimulateResult }) {
   const handleSimulate = async () => {
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:8000/predict', {
+      const res = await api.post('/predict', {
         rainfall: parseFloat(rainfall),
         river_level: parseFloat(riverLevel),
         humidity: parseFloat(humidity),

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, AlertTriangle } from 'lucide-react';
+import { apiBaseUrl } from '../api';
 
 const ReportFloodModal = ({ isOpen, onClose, onRefresh }) => {
   const [zone, setZone] = useState('Anil Nagar');
@@ -16,7 +17,7 @@ const ReportFloodModal = ({ isOpen, onClose, onRefresh }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/reports', {
+      const response = await fetch(`${apiBaseUrl}/reports`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

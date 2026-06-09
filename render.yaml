@@ -1,0 +1,33 @@
+services:
+  # ── BACKEND (FastAPI) ──────────────────────────────────────────────────────
+  - type: web
+    name: flood-backend
+    env: docker
+    dockerContext: .
+    dockerfilePath: backend/Dockerfile
+    plan: free # Change to 'starter' if you need a Persistent Disk
+    envVars:
+      - key: ALLOWED_ORIGINS
+        fromService:
+          name: flood-frontend
+          type: web
+          property: host
+      - key: PORT
+        value: 8000
+    
+    # Note: SQLite data will be lost on restarts on the Free tier.
+    # To persist data, upgrade to 'starter' and add a Disk here.
+
+  # ── FRONTEND (React) ───────────────────────────────────────────────────────
+  - type: web
+    name: flood-frontend
+    env: docker
+    dockerContext: .
+    dockerfilePath: frontend/Dockerfile
+    plan: free
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: flood-backend
+          type: web
+          property: host

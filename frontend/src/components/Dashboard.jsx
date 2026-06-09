@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { wsBaseUrl } from '../api';
 import { Activity, Clock, RefreshCw, MapPin, BarChart2, Droplets, ChevronDown, ChevronUp, Cpu, AlertCircle, AlertTriangle, Moon, Sun, BellRing } from 'lucide-react';
 import FloodMap from './FloodMap';
 import RiskChart from './RiskChart';
@@ -38,15 +38,15 @@ export default function Dashboard() {
   const fetchData = async () => {
     try {
       setRefreshing(true);
-      const [zonesRes, forecastRes, historyRes, reportsRes] = await Promise.all([
-        axios.get('http://localhost:8000/zones/risk'),
-        axios.get('http://localhost:8000/forecast'),
-        axios.get('http://localhost:8000/historical'),
-        axios.get('http://localhost:8000/reports'),
+      const [zonesRes, forecastRes, historicalRes, reportsRes] = await Promise.all([
+        api.get('/zones/risk'),
+        api.get('/forecast'),
+        api.get('/historical'),
+        api.get('/reports'),
       ]);
       setZones(zonesRes.data);
       setForecast(forecastRes.data);
-      setHistory(historyRes.data);
+      setHistory(historicalRes.data);
       setReports(reportsRes.data);
       if (!selectedZone && zonesRes.data.length > 0) setSelectedZone(zonesRes.data[0]);
       setLastUpdated(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
@@ -63,9 +63,7 @@ export default function Dashboard() {
     const t = setInterval(fetchData, 60000); 
 
     // WebSocket connection for real-time Emergency Alerts
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.hostname}:8000/ws/alerts`;
-    const ws = new WebSocket(wsUrl);
+    const ws = new WebSocket(wsBaseUrl);
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
