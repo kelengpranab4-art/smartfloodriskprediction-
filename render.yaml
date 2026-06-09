@@ -5,18 +5,7 @@ services:
     env: docker
     dockerContext: .
     dockerfilePath: backend/Dockerfile
-    plan: free # Change to 'starter' if you need a Persistent Disk
-    envVars:
-      - key: ALLOWED_ORIGINS
-        fromService:
-          name: flood-frontend
-          type: web
-          property: host
-      - key: PORT
-        value: 8000
-    
-    # Note: SQLite data will be lost on restarts on the Free tier.
-    # To persist data, upgrade to 'starter' and add a Disk here.
+    plan: free
 
   # ── FRONTEND (React) ───────────────────────────────────────────────────────
   - type: web
@@ -25,9 +14,8 @@ services:
     dockerContext: .
     dockerfilePath: frontend/Dockerfile
     plan: free
-    envVars:
+    buildArgs:
       - key: VITE_API_URL
-        fromService:
-          name: flood-backend
-          type: web
-          property: host
+        generateValue: false
+        # After first deploy, get the flood-backend URL from Render and set
+        # this env var manually: https://<flood-backend>.onrender.com
