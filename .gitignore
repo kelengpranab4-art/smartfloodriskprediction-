@@ -22,3 +22,6 @@ Thumbs.db
 # Model
 model/saved_model/
 saved_model/
+
+# Local Netlify folder
+.netlify

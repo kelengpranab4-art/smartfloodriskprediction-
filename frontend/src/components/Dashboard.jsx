@@ -8,6 +8,9 @@ import SimulationPanel from './SimulationPanel';
 import ModelMetrics from './ModelMetrics';
 import ReportFloodModal from './ReportFloodModal';
 import AlertSignup from './AlertSignup';
+import RemoteSensingPage from './RemoteSensingPage';
+import AIDecisionAssistant from './AIDecisionAssistant';
+import { Satellite } from 'lucide-react';
 
 export default function Dashboard() {
   const [zones, setZones] = useState([]);
@@ -23,6 +26,7 @@ export default function Dashboard() {
   const [showMetrics, setShowMetrics] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isSignupOpen, setSignupOpen] = useState(false);
+  const [showRemoteSensing, setShowRemoteSensing] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('flood-theme') || 'light');
 
   const toggleTheme = () => {
@@ -190,6 +194,15 @@ export default function Dashboard() {
               Report Flood
             </button>
 
+            <button 
+              onClick={() => setShowRemoteSensing(true)} 
+              className="btn-outline flex items-center gap-1.5" 
+              style={{ padding: '7px 16px', fontSize: 12, borderColor: 'var(--teal-600)', color: 'var(--teal-700)', borderRadius: 10, background: showRemoteSensing ? 'var(--teal-50)' : 'var(--bg)' }}
+            >
+              <Satellite size={13} />
+              🛰️ Remote Sensing
+            </button>
+
             <div className="glass" style={{
               display: 'flex', alignItems: 'center', gap: 8,
               borderRadius: 10, padding: '7px 14px',
@@ -223,8 +236,12 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 18, alignItems: 'start' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+      {showRemoteSensing ? (
+        <RemoteSensingPage onBack={() => setShowRemoteSensing(false)} />
+      ) : (
+        <>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 18, alignItems: 'start' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
           <div className="card" style={{ overflow: 'hidden', height: 460, padding: 0 }}>
             <FloodMap theme={theme} zoneData={zones} reportsData={reports} selectedZone={selectedZone} setSelectedZone={setSelectedZone} />
           </div>
@@ -255,7 +272,10 @@ export default function Dashboard() {
           {isSignupOpen ? (
             <AlertSignup zones={zones} onClose={() => setSignupOpen(false)} />
           ) : (
-            <ZoneCard data={selectedZone || (zones.length > 0 ? zones[0] : null)} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+              <ZoneCard data={selectedZone || (zones.length > 0 ? zones[0] : null)} />
+              <AIDecisionAssistant selectedZoneData={selectedZone || (zones.length > 0 ? zones[0] : null)} />
+            </div>
           )}
         </div>
       </div>
@@ -281,6 +301,8 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+    </>
+  )}
       <ReportFloodModal 
         isOpen={isModalOpen} 
         onClose={() => setModalOpen(false)} 

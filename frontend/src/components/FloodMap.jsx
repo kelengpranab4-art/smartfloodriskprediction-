@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MapContainer, TileLayer, Polygon, Tooltip, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
+import { Satellite, Layers } from 'lucide-react';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -25,7 +26,33 @@ const riskConfig = {
   Low: { stroke: '#059669', fill: '#10b981', opacity: 0.20, selectedOpacity: 0.35, weight: 1.5 },
 };
 
+const getGibsDate = () => {
+  const date = new Date();
+  date.setDate(date.getDate() - 2); // 2 days ago to ensure 'best' layer is processed
+  return date.toISOString().split('T')[0];
+};
+
+const GIBS_DATE = getGibsDate();
+
+const SATELLITE_LAYERS = [
+  { id: 'street', label: '🗺 Street', url: null },
+  { 
+    id: 'modis', 
+    label: '🛰 Satellite', 
+    url: `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/MODIS_Terra_CorrectedReflectance_TrueColor/default/${GIBS_DATE}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`, 
+    attr: 'NASA GIBS / MODIS Terra' 
+  },
+  { 
+    id: 'ndwi', 
+    label: '🌧 Precipitation', 
+    url: `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/IMERG_Precipitation_Rate/default/${GIBS_DATE}/GoogleMapsCompatible_Level6/{z}/{y}/{x}.png`, 
+    attr: 'NASA GIBS / GPM IMERG' 
+  },
+];
+
 export default function FloodMap({ theme, zoneData, reportsData, selectedZone, setSelectedZone }) {
+  const [activeLayer, setActiveLayer] = useState('street');
+  const selectedSat = SATELLITE_LAYERS.find(l => l.id === activeLayer);
   return (
     <div style={{ height: '100%', width: '100%' }}>
       <MapContainer
@@ -35,18 +62,33 @@ export default function FloodMap({ theme, zoneData, reportsData, selectedZone, s
         style={{ height: '100%', width: '100%' }}
         zoomControl={true}
       >
-        {/* 
-          Light tile layer — CartoDB Positron
-          Clean white/grey roads, just like Apple/Google Maps
-        */}
-        <TileLayer
-          attribution='&copy; <a href="https://carto.com">CARTO</a>'
-          url={theme === 'dark' 
-            ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-          }
-          maxZoom={19}
-        />
+        {/* Base map — street or satellite based on toggle */}
+        {activeLayer === 'street' ? (
+          <TileLayer
+            attribution='&copy; <a href="https://carto.com">CARTO</a>'
+            url={theme === 'dark'
+              ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+              : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+            }
+            maxZoom={19}
+          />
+        ) : (
+          <>
+            {/* Always show street as base so zones are visible */}
+            <TileLayer
+              attribution='&copy; <a href="https://carto.com">CARTO</a>'
+              url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+              maxZoom={19}
+              opacity={0.3}
+            />
+            <TileLayer
+              attribution={selectedSat?.attr || 'NASA GIBS'}
+              url={selectedSat?.url || ''}
+              maxZoom={8}
+              opacity={0.85}
+            />
+          </>
+        )}
 
         {zoneData.map(zone => {
           const coords = ZONES_COORDS[zone.zone];
@@ -161,6 +203,28 @@ export default function FloodMap({ theme, zoneData, reportsData, selectedZone, s
         })}
 
       </MapContainer>
+
+      {/* Satellite Layer Toggle */}
+      <div style={{
+        position: 'absolute', bottom: 20, left: 10, zIndex: 9999,
+        display: 'flex', gap: 6, background: 'rgba(255,255,255,0.95)',
+        borderRadius: 10, padding: '6px 8px', boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
+        border: '1px solid var(--gray-200)'
+      }}>
+        <Layers size={14} color="var(--teal-600)" style={{ marginRight: 4, alignSelf: 'center' }} />
+        {SATELLITE_LAYERS.map(layer => (
+          <button
+            key={layer.id}
+            onClick={() => setActiveLayer(layer.id)}
+            style={{
+              padding: '4px 10px', borderRadius: 7, fontSize: 11, fontWeight: 600,
+              cursor: 'pointer', border: 'none', transition: 'all 0.2s',
+              background: activeLayer === layer.id ? 'var(--teal-600)' : 'transparent',
+              color: activeLayer === layer.id ? '#fff' : 'var(--gray-600)',
+            }}
+          >{layer.label}</button>
+        ))}
+      </div>
     </div>
   );
 }

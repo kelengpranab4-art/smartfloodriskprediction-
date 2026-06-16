@@ -15,6 +15,9 @@ ADMIN_API_KEY = os.getenv("ADMIN_API_KEY", "guwahati-flood-admin-2026")
 # Database Configuration
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./flood_data.db")
 
+# OpenAI Config
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+
 # Model Configuration
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 MODEL_PATH = os.path.join(BASE_DIR, 'model', 'saved_model', 'flood_model.joblib')
