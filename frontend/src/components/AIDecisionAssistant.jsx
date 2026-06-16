@@ -10,7 +10,7 @@ export default function AIDecisionAssistant({ selectedZoneData }) {
     if (!selectedZoneData) return;
     setLoading(true);
     setInsight('');
-    
+
     try {
       const payload = {
         zone: selectedZoneData.zone,
@@ -19,7 +19,7 @@ export default function AIDecisionAssistant({ selectedZoneData }) {
         rainfall: selectedZoneData.rainfall,
         river_level: selectedZoneData.river_level
       };
-      
+
       const res = await api.post('/ai/analyze-flood', payload);
       setInsight(res.data.insight);
     } catch (err) {
@@ -42,13 +42,13 @@ export default function AIDecisionAssistant({ selectedZoneData }) {
             <p style={{ fontSize: 11, color: '#64748b' }}>GPT-powered operational strategy</p>
           </div>
         </div>
-        
-        <button 
-          onClick={generateInsight} 
+
+        <button
+          onClick={generateInsight}
           disabled={loading || !selectedZoneData}
           style={{
             display: 'flex', alignItems: 'center', gap: 8, padding: '8px 16px', borderRadius: 8,
-            background: 'var(--teal-600)', color: '#fff', border: 'none', cursor: 'pointer',
+            background: 'var(--teal-700)', color: '#fff', border: 'none', cursor: 'pointer',
             fontSize: 12, fontWeight: 700, opacity: (loading || !selectedZoneData) ? 0.7 : 1
           }}
         >
@@ -67,7 +67,7 @@ export default function AIDecisionAssistant({ selectedZoneData }) {
             <p>Click "Generate Plan" to request an automated evacuation or standby strategy.</p>
           </div>
         )}
-        
+
         {loading && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: '#6d28d9', fontWeight: 600 }}>
             <div className="pulse-dot" style={{ background: '#6d28d9' }} /> Generating AI response...

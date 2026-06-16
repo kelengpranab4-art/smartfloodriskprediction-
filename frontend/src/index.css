@@ -5,6 +5,7 @@
 :root {
   --teal-900: #0e4e57;
   --teal-700: #1c7b8c;
+  --teal-600: #1593a1;
   --teal-500: #00b2b2;
   --teal-400: #00c8c8;
   --teal-300: #00d6d6;
@@ -93,13 +94,35 @@ body {
 }
 
 /* ── RISK CARDS ───────────────────────────────── */
-[data-theme='light'] .card-high { background: #fff5f7; border-color: #fda4af; }
-[data-theme='light'] .card-medium { background: #fffbeb; border-color: #fcd34d; }
-[data-theme='light'] .card-low { background: #f0fdf9; border-color: #6ee7b7; }
+[data-theme='light'] .card-high {
+  background: #fff5f7;
+  border-color: #fda4af;
+}
 
-[data-theme='dark'] .card-high { background: #450a0a; border-color: #991b1b; }
-[data-theme='dark'] .card-medium { background: #451a03; border-color: #92400e; }
-[data-theme='dark'] .card-low { background: #064e3b; border-color: #065f46; }
+[data-theme='light'] .card-medium {
+  background: #fffbeb;
+  border-color: #fcd34d;
+}
+
+[data-theme='light'] .card-low {
+  background: #f0fdf9;
+  border-color: #6ee7b7;
+}
+
+[data-theme='dark'] .card-high {
+  background: #450a0a;
+  border-color: #991b1b;
+}
+
+[data-theme='dark'] .card-medium {
+  background: #451a03;
+  border-color: #92400e;
+}
+
+[data-theme='dark'] .card-low {
+  background: #064e3b;
+  border-color: #065f46;
+}
 
 /* ── BADGE ────────────────────────────────────── */
 .badge {
@@ -114,13 +137,41 @@ body {
   text-transform: uppercase;
 }
 
-.badge-high { background: #ffe4e6; color: #be123c; border: 1px solid #fca5a5; }
-.badge-medium { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
-.badge-low { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+.badge-high {
+  background: #ffe4e6;
+  color: #be123c;
+  border: 1px solid #fca5a5;
+}
 
-[data-theme='dark'] .badge-high { background: #991b1b; color: #fecaca; border: 1px solid #b91c1c; }
-[data-theme='dark'] .badge-medium { background: #92400e; color: #fde68a; border: 1px solid #b45309; }
-[data-theme='dark'] .badge-low { background: #065f46; color: #a7f3d0; border: 1px solid #047857; }
+.badge-medium {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+.badge-low {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+[data-theme='dark'] .badge-high {
+  background: #991b1b;
+  color: #fecaca;
+  border: 1px solid #b91c1c;
+}
+
+[data-theme='dark'] .badge-medium {
+  background: #92400e;
+  color: #fde68a;
+  border: 1px solid #b45309;
+}
+
+[data-theme='dark'] .badge-low {
+  background: #065f46;
+  color: #a7f3d0;
+  border: 1px solid #047857;
+}
 
 /* ── BUTTONS ──────────────────────────────────── */
 .btn-teal {
@@ -160,7 +211,10 @@ body {
   transition: all 0.18s;
 }
 
-[data-theme='dark'] .btn-outline { color: var(--teal-200); border-color: var(--teal-300); }
+[data-theme='dark'] .btn-outline {
+  color: var(--teal-200);
+  border-color: var(--teal-300);
+}
 
 .btn-outline:hover {
   background: var(--teal-50);
@@ -227,24 +281,50 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 @keyframes loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ── ANIMATIONS ───────────────────────────────── */
 @keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(1.4); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.4);
+  }
 }
 
-.pulse-dot { animation: pulse-dot 1.8s ease-in-out infinite; }
+.pulse-dot {
+  animation: pulse-dot 1.8s ease-in-out infinite;
+}
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.fade-in { animation: fade-in-up 0.4s ease both; }
+.fade-in {
+  animation: fade-in-up 0.4s ease both;
+}
+
 .leaflet-popup-content-wrapper {
   border-radius: 12px !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;

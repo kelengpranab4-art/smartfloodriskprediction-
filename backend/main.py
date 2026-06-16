@@ -198,38 +198,6 @@ def delete_report(report_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Report deleted"}
 
-# ── AI AUTOMATION ENDPOINTS ───────────────────────────────────────────────────
-
-@app.post("/ai/analyze-flood")
-def ai_analyze_flood(request: AIAnalysisRequest):
-    insight = ai_service.generate_flood_insight(request.dict())
-    return {"insight": insight}
-
-@app.post("/ai/draft-sms")
-def ai_draft_sms(request: AIDraftRequest, db: Session = Depends(get_db)):
-    # This is publicly accessible but normally only used in admin dashboard. 
-    # Can secure with Depends(verify_admin) later if needed.
-    draft = ai_service.draft_sms_alert(request.zone, request.risk_level, request.metrics)
-    return {"draft": draft}
-
-@app.get("/admin/telemetry", dependencies=[Depends(verify_admin)])
-def get_telemetry(db: Session = Depends(get_db)):
-    return {
-        "total_subscribers": db.query(models.Subscriber).count(),
-        "total_reports": db.query(models.CitizenReport).count(),
-        "active_ws_clients": len(manager.active_connections),
-        "uptime": "N/A", # Simulating more metrics
-        "model_status": "Ready" if model else "Not Loaded"
-    }
-
-# ── Load Model ────────────────────────────────────────────────────────────────
-if os.path.exists(config.MODEL_PATH):
-    model = joblib.load(config.MODEL_PATH)
-    logger.info(f"✅ Model loaded from {config.MODEL_PATH}")
-else:
-    model = None
-    logger.warning(f"⚠️ Model not found at {config.MODEL_PATH}")
-
 # ── Pydantic Models ───────────────────────────────────────────────────────────
 class PredictionRequest(BaseModel):
     rainfall:      float
@@ -273,6 +241,38 @@ class AIDraftRequest(BaseModel):
     zone: str
     risk_level: str
     metrics: str
+
+# ── AI AUTOMATION ENDPOINTS ───────────────────────────────────────────────────
+
+@app.post("/ai/analyze-flood")
+def ai_analyze_flood(request: AIAnalysisRequest):
+    insight = ai_service.generate_flood_insight(request.dict())
+    return {"insight": insight}
+
+@app.post("/ai/draft-sms")
+def ai_draft_sms(request: AIDraftRequest, db: Session = Depends(get_db)):
+    # This is publicly accessible but normally only used in admin dashboard. 
+    # Can secure with Depends(verify_admin) later if needed.
+    draft = ai_service.draft_sms_alert(request.zone, request.risk_level, request.metrics)
+    return {"draft": draft}
+
+@app.get("/admin/telemetry", dependencies=[Depends(verify_admin)])
+def get_telemetry(db: Session = Depends(get_db)):
+    return {
+        "total_subscribers": db.query(models.Subscriber).count(),
+        "total_reports": db.query(models.CitizenReport).count(),
+        "active_ws_clients": len(manager.active_connections),
+        "uptime": "N/A", # Simulating more metrics
+        "model_status": "Ready" if model else "Not Loaded"
+    }
+
+# ── Load Model ────────────────────────────────────────────────────────────────
+if os.path.exists(config.MODEL_PATH):
+    model = joblib.load(config.MODEL_PATH)
+    logger.info(f"✅ Model loaded from {config.MODEL_PATH}")
+else:
+    model = None
+    logger.warning(f"⚠️ Model not found at {config.MODEL_PATH}")
 
 # ── DATABASE INITIALIZATION ──────────────────────────────────────────────────
 from database import engine
