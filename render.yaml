@@ -1,19 +1,13 @@
 services:
-  # ── BACKEND (FastAPI) ──────────────────────────────────────────────────────
+  # ── Unified Guwahati Flood System (FastAPI + React) ─────────────────────────
   - type: web
-    name: flood-backend
+    name: guwahati-flood-system
     env: docker
     dockerContext: .
     dockerfilePath: backend/Dockerfile
     plan: free
-
-  # ── FRONTEND (React) ───────────────────────────────────────────────────────
-  - type: web
-    name: flood-frontend
-    env: docker
-    dockerContext: .
-    dockerfilePath: frontend/Dockerfile
-    plan: free
     envVars:
-      - key: VITE_API_URL
-        value: https://flood-backend.onrender.com
+      - key: OPENAI_API_KEY
+        sync: false # Set this manually in Render dashboard
+      - key: PORT
+        value: 8000
