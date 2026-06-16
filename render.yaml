@@ -9,5 +9,5 @@ services:
     envVars:
       - key: OPENAI_API_KEY
         sync: false # Set this manually in Render dashboard
-      - key: PORT
-        value: 8000
+      - key: XAI_API_KEY
+        sync: false
