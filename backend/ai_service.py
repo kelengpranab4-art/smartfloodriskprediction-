@@ -3,21 +3,31 @@ import requests
 import json
 import logging
 
+import config
+
 logger = logging.getLogger("flood-ai")
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+def _call_ai(system_prompt: str, user_prompt: str) -> str:
+    provider = config.AI_PROVIDER.lower()
+    
+    if provider == "grok":
+        url = "https://api.x.ai/v1/chat/completions"
+        api_key = config.XAI_API_KEY
+        model = "grok-beta"
+    else:
+        url = "https://api.openai.com/v1/chat/completions"
+        api_key = config.OPENAI_API_KEY
+        model = "gpt-3.5-turbo"
 
-def _call_openai(system_prompt: str, user_prompt: str) -> str:
-    if not OPENAI_API_KEY:
-        raise ValueError("No API Key")
+    if not api_key:
+        raise ValueError(f"No API Key for {provider}")
         
-    url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {OPENAI_API_KEY}"
+        "Authorization": f"Bearer {api_key}"
     }
     data = {
-        "model": "gpt-3.5-turbo",
+        "model": model,
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
@@ -39,13 +49,12 @@ def generate_flood_insight(zone_data: dict) -> str:
     user_prompt = f"Current Data for {zone_data.get('zone', 'Unknown')}: \nRisk: {zone_data.get('risk', 'Unknown')} (Score: {zone_data.get('score', 0)})\nRainfall: {zone_data.get('rainfall', 0)}mm\nRiver Level: {zone_data.get('river_level', 0)}m\n\nGenerate a brief 3-point action plan."
     
     try:
-        if OPENAI_API_KEY:
-            return _call_openai(system_prompt, user_prompt)
+        if config.XAI_API_KEY or config.OPENAI_API_KEY:
+            return _call_ai(system_prompt, user_prompt)
         else:
-            # -- FALLBACK --
             return _generate_fallback_insight(zone_data)
     except Exception as e:
-        logger.error(f"OpenAI API failed: {e}. Using fallback.")
+        logger.error(f"AI API failed: {e}. Using fallback.")
         return _generate_fallback_insight(zone_data)
 
 def draft_sms_alert(zone_name: str, risk_level: str, metrics: str) -> str:
@@ -56,12 +65,12 @@ def draft_sms_alert(zone_name: str, risk_level: str, metrics: str) -> str:
     user_prompt = f"Zone: {zone_name}\nRisk Level: {risk_level}\nMetrics: {metrics}\nDraft the SMS:"
     
     try:
-        if OPENAI_API_KEY:
-            return _call_openai(system_prompt, user_prompt)
+        if config.XAI_API_KEY or config.OPENAI_API_KEY:
+            return _call_ai(system_prompt, user_prompt)
         else:
             return _generate_fallback_sms(zone_name, risk_level)
     except Exception as e:
-        logger.error(f"OpenAI API failed: {e}. Using fallback.")
+        logger.error(f"AI API failed: {e}. Using fallback.")
         return _generate_fallback_sms(zone_name, risk_level)
 
 def _generate_fallback_insight(z: dict) -> str:
